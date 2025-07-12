@@ -18,12 +18,16 @@ public class NutritionAssessmentController : ControllerBase
 
     [HttpGet("report")]
     [ProducesResponseType(typeof(NutritionReport), 200)]
+    [ProducesResponseType(404)]
     public async Task<IActionResult> GetNutritionReport()
     {
         var lastReport = await _context.NutritionReports
             .Include(r => r.Intakes)
             .Include(r => r.Supplements)
-            .ToListAsync();
+            .OrderByDescending(r => r.CreatedAt)
+            .FirstOrDefaultAsync();
+
+        if (lastReport == null) return NotFound();
 
         return Ok(lastReport);
     }
