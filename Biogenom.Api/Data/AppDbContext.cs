@@ -5,10 +5,10 @@ namespace Biogenom.Api.Data
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
         public DbSet<NutritionReport> NutritionReports { get; set; }
         public DbSet<NutrientIntake> NutrientIntakes { get; set; }
+
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -16,11 +16,10 @@ namespace Biogenom.Api.Data
                 .HasMany(r => r.Intakes)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
-            
+
             modelBuilder.Entity<NutritionReport>()
                 .HasMany(r => r.Supplements)
-                .WithOne()
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithMany();
         }
     }
 }
